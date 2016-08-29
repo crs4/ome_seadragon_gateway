@@ -30,6 +30,9 @@ urlpatterns = [
         r'(?P<column>[0-9]+)_(?P<row>[0-9]+).(?P<image_format>[\w]+)$',
         OmeTileWrapper.as_view()),
 
+    # image microns per pixel
+    url(r'^api/image_mpp/(?P<image_id>[0-9]+)/$', ImageMppWrapper.as_view()),
+
     # ome_seadragon static files
     url(r'gw/static/js/(?P<resource_name>ome_seadragon|jquery|openseadragon|openseadragon\-scalebar|paper\-full|bootstrap).min.js$',
         get_javascript_min_resource),
