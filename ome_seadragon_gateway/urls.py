@@ -18,15 +18,16 @@ from django.contrib import admin
 
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from viewer_gw.views import OmeDZIWrapper, OmeTileWrapper
-from static_files_gw.views import get_javascript_min_resource, get_css_min_resource
+from viewer_gw.views import OmeDZIWrapper, OmeTileWrapper, ImageMppWrapper
+from static_files_gw.views import get_javascript_min_resource, get_css_min_resource, get_openseadragon_imgs
+from examples.views import get_example_viewer
 
 urlpatterns = [
     # DZI files
-    url(r'api/dzi/(?P<image_id>[0-9]+)/$', OmeDZIWrapper.as_view()),
+    url(r'^api/deepzoom/(?P<image_id>[0-9]+)/$', OmeDZIWrapper.as_view()),
 
-    # TILES
-    url(r'api/tiles/(?P<image_id>[0-9]+)_files/(?P<level>[0-9]+)/'
+    # tiles
+    url(r'^api/deepzoom/(?P<image_id>[0-9]+)_files/(?P<level>[0-9]+)/'
         r'(?P<column>[0-9]+)_(?P<row>[0-9]+).(?P<image_format>[\w]+)$',
         OmeTileWrapper.as_view()),
 
@@ -34,10 +35,13 @@ urlpatterns = [
     url(r'^api/image_mpp/(?P<image_id>[0-9]+)/$', ImageMppWrapper.as_view()),
 
     # ome_seadragon static files
-    url(r'gw/static/js/(?P<resource_name>ome_seadragon|jquery|openseadragon|openseadragon\-scalebar|paper\-full|bootstrap).min.js$',
+    url(r'^gw/static/js/(?P<resource_name>ome_seadragon|jquery|openseadragon|openseadragon\-scalebar|paper\-full|bootstrap).min.js$',
         get_javascript_min_resource),
     url(r'^gw/static/css/(?P<resource_name>bootstrap).min.css$', get_css_min_resource),
     url(r'^gw/static/img/openseadragon/(?P<image_file>[\w\-.]+)$', get_openseadragon_imgs),
+
+    # examples
+    url(r'^examples/viewer/(?P<image_id>[0-9]+)/$', get_example_viewer),
 
     # admin
     url(r'^admin/', include(admin.site.urls)),

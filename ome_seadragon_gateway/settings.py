@@ -39,7 +39,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'rest_framework',
     'viewer_gw',
-    'static_files_gw'
+    'static_files_gw',
+    'examples'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -58,7 +59,9 @@ ROOT_URLCONF = 'ome_seadragon_gateway.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
