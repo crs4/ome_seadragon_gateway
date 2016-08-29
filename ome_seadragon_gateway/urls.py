@@ -33,7 +33,8 @@ urlpatterns = [
     # ome_seadragon static files
     url(r'gw/static/js/(?P<resource_name>ome_seadragon|jquery|openseadragon|openseadragon\-scalebar|paper\-full|bootstrap).min.js$',
         get_javascript_min_resource),
-    url(r'gw/static/css/(?P<resource_name>bootstrap).min.css$', get_css_min_resource),
+    url(r'^gw/static/css/(?P<resource_name>bootstrap).min.css$', get_css_min_resource),
+    url(r'^gw/static/img/openseadragon/(?P<image_file>[\w\-.]+)$', get_openseadragon_imgs),
 
     # admin
     url(r'^admin/', include(admin.site.urls)),

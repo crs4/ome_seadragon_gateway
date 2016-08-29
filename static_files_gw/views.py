@@ -42,3 +42,12 @@ def get_css_min_resource(request, resource_name):
         'css/%s.min.css' % resource_name
     )
     return _get_static_content(uri)
+
+
+@api_view()
+def get_openseadragon_imgs(request, image_file):
+    uri = urljoin(
+        gws.OME_SEADRAGON_STATIC_FILES_URL,
+        'img/openseadragon/%s' % image_file
+    )
+    return _get_static_content(uri)
