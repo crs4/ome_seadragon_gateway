@@ -19,6 +19,7 @@ from django.contrib import admin
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from viewer_gw.views import OmeDZIWrapper, OmeTileWrapper
+from static_files_gw.views import get_javascript_min_resource, get_css_min_resource
 
 urlpatterns = [
     # DZI files
@@ -28,6 +29,11 @@ urlpatterns = [
     url(r'api/tiles/(?P<image_id>[0-9]+)_files/(?P<level>[0-9]+)/'
         r'(?P<column>[0-9]+)_(?P<row>[0-9]+).(?P<image_format>[\w]+)$',
         OmeTileWrapper.as_view()),
+
+    # ome_seadragon static files
+    url(r'gw/static/js/(?P<resource_name>ome_seadragon|jquery|openseadragon|openseadragon\-scalebar|paper\-full|bootstrap).min.js$',
+        get_javascript_min_resource),
+    url(r'gw/static/css/(?P<resource_name>bootstrap).min.css$', get_css_min_resource),
 
     # admin
     url(r'^admin/', include(admin.site.urls)),

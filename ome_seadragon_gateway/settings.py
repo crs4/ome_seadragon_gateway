@@ -38,7 +38,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'viewer_gw'
+    'viewer_gw',
+    'static_files_gw'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -152,4 +153,4 @@ OME_PASSWD = None
 OME_SERVER_ID = 1
 
 OME_SEADRAGON_BASE_URL = 'http://localhost:8080/ome_seadragon/'
-OME_SEADRAGON_STATIC_FILES_URL = 'http://localhost:8080/static/'
+OME_SEADRAGON_STATIC_FILES_URL = 'http://localhost:8080/static/ome_seadragon/'
