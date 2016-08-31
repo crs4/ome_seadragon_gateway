@@ -157,3 +157,11 @@ OME_SERVER_ID = 1
 
 OME_SEADRAGON_BASE_URL = 'http://localhost:8080/ome_seadragon/'
 OME_SEADRAGON_STATIC_FILES_URL = 'http://localhost:8080/static/ome_seadragon/'
+
+CACHE_SETTINGS = {
+    'driver': 'redis',
+    'host': 'localhost',
+    'port': 6379,
+    'db': 0,
+    'expire_time': {'minutes': 30}
+}
