@@ -14,22 +14,18 @@ from ome_seadragon_cache import CacheDriverFactory
 
 import ome_seadragon_gateway.settings as gws
 from ome_seadragon_gateway.decorators import ome_session_required
+from view_templates.views import SimpleGetWrapper
 
 import logging
 logger = logging.getLogger('ome_seadragon_gw')
 
 
-class OmeDZIWrapper(APIView):
+class OmeDZIWrapper(SimpleGetWrapper):
 
     @ome_session_required
     def get(self, request, client, image_id, format=None):
-        uri = urljoin(
-            gws.OME_SEADRAGON_BASE_URL,
-            'deepzoom/get/%s.dzi' % image_id
-        )
-        logger.info('Payload: %s', uri)
-        response = client.get(uri, headers={'X-Requested-With': 'XMLHttpRequest'})
-        logger.info('STATUS CODE: %d', response.status_code)
+        url = self._get_ome_seadragon_url('deepzoom/get/%s.dzi' % image_id)
+        response = client.get(url, headers={'X-Requested-With': 'XMLHttpRequest'})
         if response.status_code == status.HTTP_200_OK:
             xml_content = response.content
             tile_size = etree.fromstring(xml_content).get('TileSize')
@@ -39,11 +35,11 @@ class OmeDZIWrapper(APIView):
                 content_type=response.headers.get('content-type')
             )
         else:
-            logger.error('ERROR')
+            logger.error('ERROR CODE: %s', response.status_code)
             raise NotAuthenticated()
 
 
-class OmeTileWrapper(APIView):
+class OmeTileWrapper(SimpleGetWrapper):
 
     def _tile_from_cache(self, request, image_id, level, column, row, image_format):
         if request.session.get('images_conf') and request.session.get('images_conf').get(image_id):
@@ -52,8 +48,6 @@ class OmeTileWrapper(APIView):
                 cache_settings['host'], cache_settings['port'], cache_settings['db'],
                 cache_settings['expire_time']
             )
-            logger.info('Retrieving tile from cache for image %s (L:%s R:%s C:%s)',
-                        image_id, level, row, column)
             return cache.tile_from_cache(image_id=image_id, level=level, column=column, row=row,
                                          image_format=image_format,
                                          tile_size=int(request.session.get('images_conf').get(image_id)['tile_size']))
@@ -67,8 +61,6 @@ class OmeTileWrapper(APIView):
                 cache_settings['host'], cache_settings['port'], cache_settings['db'],
                 cache_settings['expire_time']
             )
-            logger.info('Saving tile to cache for image %s (L:%s R:%s C:%s)',
-                        image_id, level, row, column)
             cache.tile_to_cache(image_id=image_id, level=level, column=column, row=row,
                                 image_format=image_format, image_obj=tile,
                                 tile_size=int(request.session.get('images_conf').get(image_id)['tile_size']))
@@ -79,44 +71,27 @@ class OmeTileWrapper(APIView):
     def get(self, request, client, image_id, level, column, row, image_format, format=None):
         tile = self._tile_from_cache(request, image_id, level, column, row, image_format)
         if tile is None:
-            uri = urljoin(
-                gws.OME_SEADRAGON_BASE_URL,
-                'deepzoom/get/%s_files/%s/%s_%s.%s' % (image_id, level, column, row, image_format)
-            )
-            logger.info('Payload: %s', uri)
-            response = client.get(uri, headers={'X-Requested-With': 'XMLHttpRequest'})
+            url = self._get_ome_seadragon_url('deepzoom/get/%s_files/%s/%s_%s.%s' %
+                                              (image_id, level, column, row, image_format))
+            response = client.get(url, headers={'X-Requested-With': 'XMLHttpRequest'})
             tile = Image.open(StringIO(response.content))
             self._tile_to_cache(request, image_id, level, column, row, image_format, tile)
-            logger.info('STATUS CODE: %d', response.status_code)
             if response.status_code == status.HTTP_200_OK:
-                logger.info(response.headers.get('content-type'))
                 return HttpResponse(
                     response.content, status=status.HTTP_200_OK,
                     content_type=response.headers.get('content-type'))
             else:
-                logger.error('ERROR')
+                logger.error('ERROR CODE: %s', response.status_code)
+                raise NotAuthenticated()
         else:
             response = HttpResponse(content_type='image/%s' % image_format)
             tile.save(response, image_format)
             return response
 
 
-class ImageMppWrapper(APIView):
+class ImageMppWrapper(SimpleGetWrapper):
 
     @ome_session_required
     def get(self, request, client, image_id, format=None):
-        uri = urljoin(
-            gws.OME_SEADRAGON_BASE_URL,
-            'deepzoom/image_mpp/%s.dzi' % image_id
-        )
-        logger.info('Payload: %s', uri)
-        response = client.get(uri, headers={'X-Requested-With': 'XMLHttpRequest'})
-        logger.info('STATUS CODE: %d', response.status_code)
-        if response.status_code == status.HTTP_200_OK:
-            logger.info(response.headers.get('content-type'))
-            return HttpResponse(
-                response.content, status=status.HTTP_200_OK,
-                content_type=response.headers.get('content-type')
-            )
-        else:
-            logger.error('ERROR')
+        url = self._get_ome_seadragon_url('deepzoom/image_mpp/%s.dzi' % image_id)
+        return self._get(client, url)

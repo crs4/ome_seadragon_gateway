@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'view_templates',
     'viewer_gw',
     'static_files_gw',
     'examples'
