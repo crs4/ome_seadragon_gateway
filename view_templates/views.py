@@ -19,8 +19,9 @@ class SimpleGetWrapper(APIView):
             gws.OME_SEADRAGON_BASE_URL, url
         )
 
-    def _get(self, client, url):
-        response = client.get(url, headers={'X-Requested-With': 'XMLHttpRequest'})
+    def _get(self, client, url, params=None):
+        response = client.get(url, params=params,
+                              headers={'X-Requested-With': 'XMLHttpRequest'})
         if response.status_code == status.HTTP_200_OK:
             return HttpResponse(
                 response.content, status=status.HTTP_200_OK,
