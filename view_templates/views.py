@@ -1,7 +1,7 @@
 from urlparse import urljoin
 
 from rest_framework import status
-from rest_framework.views import APIView
+from rest_framework.viewsets import ViewSet
 from rest_framework.exceptions import NotAuthenticated
 
 from django.http import HttpResponse
@@ -12,7 +12,7 @@ import logging
 logger = logging.getLogger('ome_seadragon_gw')
 
 
-class SimpleGetWrapper(APIView):
+class SimpleGetWrapper(ViewSet):
 
     def _get_ome_seadragon_url(self, url):
         return urljoin(

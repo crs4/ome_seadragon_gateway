@@ -18,21 +18,25 @@ from django.contrib import admin
 
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from viewer_gw.views import OmeDZIWrapper, OmeTileWrapper, ImageMppWrapper
+from viewer_gw.views import DZIWrapper, TileWrapper, ImageMppWrapper
+from ome_data_gw.views import ProjectsListWrapper, ProjectDetailsWrapper, DatasetDetailsWrapper,\
+    ImagesQuickListWrapper, ImageDetailsWrapper
 from static_files_gw.views import get_javascript_min_resource, get_css_min_resource, get_openseadragon_imgs
 from examples.views import get_example_viewer
 
 urlpatterns = [
     # DZI files
-    url(r'^api/deepzoom/(?P<image_id>[0-9]+)/$', OmeDZIWrapper.as_view()),
+    url(r'^api/deepzoom/(?P<image_id>[0-9]+)/$',
+        DZIWrapper.as_view({'get': 'get'})),
 
     # tiles
     url(r'^api/deepzoom/(?P<image_id>[0-9]+)_files/(?P<level>[0-9]+)/'
         r'(?P<column>[0-9]+)_(?P<row>[0-9]+).(?P<image_format>[\w]+)$',
-        OmeTileWrapper.as_view()),
+        TileWrapper.as_view({'get': 'get'})),
 
     # image microns per pixel
-    url(r'^api/image_mpp/(?P<image_id>[0-9]+)/$', ImageMppWrapper.as_view()),
+    url(r'^api/image_mpp/(?P<image_id>[0-9]+)/$',
+        ImageMppWrapper.as_view({'get': 'get'})),
 
     # ome_seadragon static files
     url(r'^gw/static/js/(?P<resource_name>ome_seadragon|jquery|openseadragon|openseadragon\-scalebar|paper\-full|bootstrap).min.js$',

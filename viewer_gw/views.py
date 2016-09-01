@@ -1,11 +1,8 @@
-from urlparse import urljoin
-
 from lxml import etree
 from cStringIO import StringIO
 from PIL import Image
 
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.exceptions import NotAuthenticated
 
 from django.http import HttpResponse
@@ -20,7 +17,7 @@ import logging
 logger = logging.getLogger('ome_seadragon_gw')
 
 
-class OmeDZIWrapper(SimpleGetWrapper):
+class DZIWrapper(SimpleGetWrapper):
 
     @ome_session_required
     def get(self, request, client, image_id, format=None):
@@ -39,7 +36,7 @@ class OmeDZIWrapper(SimpleGetWrapper):
             raise NotAuthenticated()
 
 
-class OmeTileWrapper(SimpleGetWrapper):
+class TileWrapper(SimpleGetWrapper):
 
     def _tile_from_cache(self, request, image_id, level, column, row, image_format):
         if request.session.get('images_conf') and request.session.get('images_conf').get(image_id):
