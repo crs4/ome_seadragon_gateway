@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'view_templates',
     'viewer_gw',
     'ome_data_gw',
+    'ome_tags_gw',
     'static_files_gw',
     'examples'
 )

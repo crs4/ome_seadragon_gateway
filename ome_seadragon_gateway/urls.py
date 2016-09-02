@@ -21,6 +21,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from viewer_gw.views import DZIWrapper, TileWrapper, ImageMppWrapper
 from ome_data_gw.views import ProjectsListWrapper, ProjectDetailsWrapper, DatasetDetailsWrapper,\
     ImagesQuickListWrapper, ImageDetailsWrapper
+from ome_tags_gw.views import AnnotationsWrapper, TagsetDetailsWrapper, TagDetailsWrapper
 from static_files_gw.views import get_javascript_min_resource, get_css_min_resource, get_openseadragon_imgs
 from examples.views import get_example_viewer
 
@@ -63,6 +64,25 @@ urlpatterns = [
         ImageDetailsWrapper.as_view({'get': 'get'})),
     url(r'api/images/(?P<image_id>[0-9]+)/rois/$',
         ImageDetailsWrapper.as_view({'get': 'get_with_rois'})),
+
+    # TAGs
+    url(r'api/annotations/$', AnnotationsWrapper.as_view({'get': 'get'})),
+    url(r'api/annotations/images/$',
+        AnnotationsWrapper.as_view({'get': 'get_with_images'})),
+    url(r'api/annotations/(?P<query>[\w\-.]+)/$',
+        AnnotationsWrapper.as_view({'get': 'find'})),
+    url(r'api/annotations/(?P<query>[\w\-.]+)/images/$',
+        AnnotationsWrapper.as_view({'get': 'find_with_images'})),
+    url(r'api/tagsets/(?P<tagset_id>[0-9]+)/$',
+        TagsetDetailsWrapper.as_view({'get': 'get'})),
+    url(r'api/tagsets/(?P<tagset_id>[0-9]+)/tags/$',
+        TagsetDetailsWrapper.as_view({'get': 'get_with_tags'})),
+    url(r'api/tagsets/(?P<tagset_id>[0-9]+)/tags/images/$',
+        TagsetDetailsWrapper.as_view({'get': 'get_with_images'})),
+    url(r'api/tags/(?P<tag_id>[0-9]+)/$',
+        TagDetailsWrapper.as_view({'get': 'get'})),
+    url(r'api/tags/(?P<tag_id>[0-9]+)/images/$',
+        TagDetailsWrapper.as_view({'get': 'get_with_images'})),
 
     # ome_seadragon static files
     url(r'^gw/static/js/(?P<resource_name>ome_seadragon|jquery|openseadragon|openseadragon\-scalebar|paper\-full|bootstrap).min.js$',
