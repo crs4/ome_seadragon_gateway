@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'view_templates',
     'viewer_gw',
+    'ome_data_gw',
     'static_files_gw',
     'examples'
 )
