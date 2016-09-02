@@ -20,6 +20,7 @@ class SimpleGetWrapper(ViewSet):
         )
 
     def _get(self, client, url, params=None):
+        logger.debug('_get --- URL: %s --- params: %r', url, params)
         response = client.get(url, params=params,
                               headers={'X-Requested-With': 'XMLHttpRequest'})
         if response.status_code == status.HTTP_200_OK:

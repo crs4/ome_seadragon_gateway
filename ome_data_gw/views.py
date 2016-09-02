@@ -13,6 +13,12 @@ class ProjectsListWrapper(SimpleGetWrapper):
         url = self._get_ome_seadragon_url('get/projects/')
         return self._get(client, url)
 
+    @ome_session_required
+    def get_with_datasets(self, request, client, format=None):
+        url = self._get_ome_seadragon_url('get/projects')
+        params = {'datasets': 'true'}
+        return self._get(client, url, params)
+
 
 class ProjectDetailsWrapper(SimpleGetWrapper):
 
@@ -30,13 +36,13 @@ class ProjectDetailsWrapper(SimpleGetWrapper):
     @ome_session_required
     def get_with_images(self, request, client, project_id, format=None):
         url = self._get_ome_seadragon_url('get/project/%s/' % project_id)
-        params = {'datasets': 'true', 'image': 'true'}
+        params = {'datasets': 'true', 'images': 'true'}
         return self._get(client, url, params)
 
     @ome_session_required
     def get_with_full_series(self, request, client, project_id, format=None):
         url = self._get_ome_seadragon_url('get/project/%s/' % project_id)
-        params = {'datasets': 'true', 'image': 'true', 'full_series': 'true'}
+        params = {'datasets': 'true', 'images': 'true', 'full_series': 'true'}
         return self._get(client, url, params)
 
 
@@ -44,18 +50,18 @@ class DatasetDetailsWrapper(SimpleGetWrapper):
 
     @ome_session_required
     def get(self, request, client, dataset_id, format=None):
-        url = self._get_ome_seadragon_url('get/datasets/%s/' % dataset_id)
+        url = self._get_ome_seadragon_url('get/dataset/%s/' % dataset_id)
         return self._get(client, url)
 
     @ome_session_required
     def get_with_images(self, request, client, dataset_id, format=None):
-        url = self._get_ome_seadragon_url('get/datasets/%s/' % dataset_id)
+        url = self._get_ome_seadragon_url('get/dataset/%s/' % dataset_id)
         params = {'images': 'true'}
         return self._get(client, url, params)
 
     @ome_session_required
-    def get_with_full_series(self, request, client, datset_id, format=None):
-        url = self._get_ome_seadragon_url('get/datasets/%s/' % dataset_id)
+    def get_with_full_series(self, request, client, dataset_id, format=None):
+        url = self._get_ome_seadragon_url('get/dataset/%s/' % dataset_id)
         params = {'images': 'true', 'full_series': 'true'}
         return self._get(client, url, params)
 
