@@ -92,3 +92,45 @@ class ImageMppWrapper(SimpleGetWrapper):
     def get(self, request, client, image_id, format=None):
         url = self._get_ome_seadragon_url('deepzoom/image_mpp/%s.dzi' % image_id)
         return self._get(client, url)
+
+
+class ThumbnailWrapper(SimpleGetWrapper):
+
+    def _thumbnail_from_cache(self, image_id, image_size, image_format):
+        cache_settings = gws.CACHE_SETTINGS
+        cache = CacheDriverFactory(cache_settings['driver']).get_cache(
+            cache_settings['host'], cache_settings['port'], cache_settings['db'],
+            cache_settings['expire_time']
+        )
+        return cache.thumbnail_from_cache(image_id, image_size, image_format)
+
+    def _thumbnail_to_cache(self, image_id, thumbnail, image_size, image_format):
+        cache_settings = gws.CACHE_SETTINGS
+        cache = CacheDriverFactory(cache_settings['driver']).get_cache(
+            cache_settings['host'], cache_settings['port'], cache_settings['db'],
+            cache_settings['expire_time']
+        )
+        cache.thumbnail_to_cache(image_id, thumbnail, image_size, image_format)
+
+    @ome_session_required
+    def get(self, request, client, image_id, size, image_format, format=None):
+        thumbnail = self._thumbnail_from_cache(image_id, size, image_format)
+        if thumbnail is None:
+            url = self._get_ome_seadragon_url('deepzoom/get/thumbnail/%s.dzi' % image_id)
+            params = {'size': size}
+            response = client.get(url, params=params,
+                                  headers={'X-Requested-With': 'XMLHttpRequest'})
+            thumbnail = Image.open(StringIO(response.content))
+            self._thumbnail_to_cache(image_id, thumbnail, size, image_format)
+            if response.status_code == status.HTTP_200_OK:
+                return HttpResponse(
+                    response.content, status=status.HTTP_200_OK,
+                    content_type=response.headers.get('content-type')
+                )
+            else:
+                logger.error('ERROR CODE: %s', response.status_code)
+                raise NotAuthenticated()
+        else:
+            response = HttpResponse(content_type='image/%s' % image_format)
+            thumbnail.save(response, image_format)
+            return response

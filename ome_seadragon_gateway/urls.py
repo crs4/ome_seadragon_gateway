@@ -18,7 +18,7 @@ from django.contrib import admin
 
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from viewer_gw.views import DZIWrapper, TileWrapper, ImageMppWrapper
+from viewer_gw.views import DZIWrapper, TileWrapper, ImageMppWrapper, ThumbnailWrapper
 from ome_data_gw.views import ProjectsListWrapper, ProjectDetailsWrapper, DatasetDetailsWrapper,\
     ImagesQuickListWrapper, ImageDetailsWrapper
 from ome_tags_gw.views import AnnotationsWrapper, TagsetDetailsWrapper, TagDetailsWrapper
@@ -38,6 +38,10 @@ urlpatterns = [
     # image microns per pixel
     url(r'^api/image_mpp/(?P<image_id>[0-9]+)/$',
         ImageMppWrapper.as_view({'get': 'get'})),
+
+    # thmbnails
+    url(r'^api/thumbnail/(?P<image_id>[0-9]+)/(?P<size>[0-9]+)/(?P<image_format>jpeg|png)/',
+        ThumbnailWrapper.as_view({'get': 'get'})),
 
     # projects, datasets and images details
     url(r'api/projects/$', ProjectsListWrapper.as_view({'get': 'get'})),
