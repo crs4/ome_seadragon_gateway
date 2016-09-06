@@ -85,10 +85,11 @@ urlpatterns = [
         TagDetailsWrapper.as_view({'get': 'get_with_images'})),
 
     # ome_seadragon static files
-    url(r'^gw/static/js/(?P<resource_name>ome_seadragon|jquery|openseadragon|openseadragon\-scalebar|paper\-full|bootstrap).min.js$',
+    url(r'^static/ome_seadragon/js/'
+        r'(?P<resource_name>ome_seadragon|jquery|openseadragon|openseadragon\-scalebar|paper\-full|bootstrap).min.js$',
         get_javascript_min_resource),
-    url(r'^gw/static/css/(?P<resource_name>bootstrap).min.css$', get_css_min_resource),
-    url(r'^gw/static/img/openseadragon/(?P<image_file>[\w\-.]+)$', get_openseadragon_imgs),
+    url(r'^static/ome_seadragon/css/(?P<resource_name>bootstrap).min.css$', get_css_min_resource),
+    url(r'^static/ome_seadragon/img/openseadragon/(?P<image_file>[\w\-.]+)$', get_openseadragon_imgs),
 
     # examples
     url(r'^examples/viewer/(?P<image_id>[0-9]+)/$', get_example_viewer),
