@@ -39,7 +39,7 @@ urlpatterns = [
     url(r'^api/image_mpp/(?P<image_id>[0-9]+)/$',
         ImageMppWrapper.as_view({'get': 'get'})),
 
-    # thmbnails
+    # thumbnails
     url(r'^api/thumbnail/(?P<image_id>[0-9]+)/(?P<size>[0-9]+)/(?P<image_format>jpeg|png)/',
         ThumbnailWrapper.as_view({'get': 'get'})),
 

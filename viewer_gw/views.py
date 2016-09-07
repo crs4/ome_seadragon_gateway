@@ -38,41 +38,54 @@ class DZIWrapper(SimpleGetWrapper):
 
 class TileWrapper(SimpleGetWrapper):
 
-    def _tile_from_cache(self, request, image_id, level, column, row, image_format):
-        if request.session.get('images_conf') and request.session.get('images_conf').get(image_id):
+    def _tile_from_cache(self, image_id, level, column, row, image_format, tile_size):
+        if tile_size:
             cache_settings = gws.CACHE_SETTINGS
             cache = CacheDriverFactory(cache_settings['driver']).get_cache(
                 cache_settings['host'], cache_settings['port'], cache_settings['db'],
                 cache_settings['expire_time']
             )
             return cache.tile_from_cache(image_id=image_id, level=level, column=column, row=row,
-                                         image_format=image_format,
-                                         tile_size=int(request.session.get('images_conf').get(image_id)['tile_size']))
+                                         image_format=image_format, tile_size=tile_size)
         else:
             return None
 
-    def _tile_to_cache(self, request, image_id, level, column, row, image_format, tile):
-        if request.session.get('images_conf') and request.session.get('images_conf').get(image_id):
+    def _tile_to_cache(self, image_id, level, column, row, image_format, tile_size, tile):
+        if tile_size:
             cache_settings = gws.CACHE_SETTINGS
             cache = CacheDriverFactory(cache_settings['driver']).get_cache(
                 cache_settings['host'], cache_settings['port'], cache_settings['db'],
                 cache_settings['expire_time']
             )
             cache.tile_to_cache(image_id=image_id, level=level, column=column, row=row,
-                                image_format=image_format, image_obj=tile,
-                                tile_size=int(request.session.get('images_conf').get(image_id)['tile_size']))
+                                image_format=image_format, image_obj=tile, tile_size=tile_size)
         else:
             logger.warn('No configuration for image %s, tiles not saved to cache', image_id)
 
+    def _get_tile_size(self, request, client, image_id):
+        if request.session.get('images_conf') and request.session.get('images_conf').get(image_id):
+            return request.session.get('images_conf').get(image_id)
+        else:
+            url = self._get_ome_seadragon_url('deepzoom/get/%s.dzi' % image_id)
+            response = client.get(url, headers={'X-Requested-With': 'XMLHttpRequest'})
+            if response.status_code == status.HTTP_200_OK:
+                xml_content = response.content
+                tile_size = etree.fromstring(xml_content).get('TileSize')
+                request.session.setdefault('images_conf', {}).update({image_id: {'tile_size': tile_size}})
+                return tile_size
+            else:
+                return None
+
     @ome_session_required
     def get(self, request, client, image_id, level, column, row, image_format, format=None):
-        tile = self._tile_from_cache(request, image_id, level, column, row, image_format)
+        tile_size = self._get_tile_size(request, client, image_id)
+        tile = self._tile_from_cache(image_id, level, column, row, image_format, tile_size)
         if tile is None:
             url = self._get_ome_seadragon_url('deepzoom/get/%s_files/%s/%s_%s.%s' %
                                               (image_id, level, column, row, image_format))
             response = client.get(url, headers={'X-Requested-With': 'XMLHttpRequest'})
             tile = Image.open(StringIO(response.content))
-            self._tile_to_cache(request, image_id, level, column, row, image_format, tile)
+            self._tile_to_cache(image_id, level, column, row, image_format, tile_size, tile)
             if response.status_code == status.HTTP_200_OK:
                 return HttpResponse(
                     response.content, status=status.HTTP_200_OK,
