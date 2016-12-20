@@ -37,6 +37,7 @@ class DZIWrapper(SimpleGetWrapper):
 
 
 class TileWrapper(SimpleGetWrapper):
+    permission_classes = ()
 
     def _tile_from_cache(self, image_id, level, column, row, image_format, tile_size):
         if tile_size:
