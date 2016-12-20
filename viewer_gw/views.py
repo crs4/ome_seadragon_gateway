@@ -1,6 +1,7 @@
 from lxml import etree
 from cStringIO import StringIO
 from PIL import Image
+import json
 
 from rest_framework import status
 from rest_framework.exceptions import NotAuthenticated
@@ -29,6 +30,48 @@ class DZIWrapper(SimpleGetWrapper):
             request.session.setdefault('images_conf', {}).update({image_id: {'tile_size': tile_size}})
             return HttpResponse(
                 xml_content, status=status.HTTP_200_OK,
+                content_type=response.headers.get('content-type')
+            )
+        else:
+            logger.error('ERROR CODE: %s', response.status_code)
+            raise NotAuthenticated()
+
+
+class JSONWrapper(SimpleGetWrapper):
+
+    @ome_session_required
+    def get(self, request, client, image_id, format=None):
+        url = self._get_ome_seadragon_url('deepzoom/get/%s.json' % image_id)
+        response = client.get(url, headers={'X-Requested-With': 'XMLHttpRequest'})
+        if response.status_code == status.HTTP_200_OK:
+            json_data = json.loads(response.content)
+            tiles_url = '%s://%s%s' % (request.scheme, request.get_host(), request.path)
+            tiles_url = '/'.join(tiles_url.split('/')[:-2])
+            tiles_url = '/'.join([tiles_url, '%s_files/' % image_id])
+            json_data['Image']['Url'] = tiles_url
+            return HttpResponse(
+                json.dumps(json_data), status=status.HTTP_200_OK,
+                content_type=response.headers.get('content-type')
+            )
+        else:
+            logger.error('ERROR CODE: %s', response.status_code)
+            raise NotAuthenticated()
+
+
+class JSONMetadataWrapper(SimpleGetWrapper):
+
+    @ome_session_required
+    def get(self, request, client, image_id, format=None):
+        url = self._get_ome_seadragon_url('deepzoom/get/%s_metadata.json' % image_id)
+        response = client.get(url, headers={'X-Requested-With': 'XMLHttpRequest'})
+        if response.status_code == status.HTTP_200_OK:
+            json_data = json.loads(response.content)
+            tiles_url = '%s://%s%s' % (request.scheme, request.get_host(), request.path)
+            tiles_url = '/'.join(tiles_url.split('/')[:-2])
+            tiles_url = '/'.join([tiles_url, '%s_files/' % image_id])
+            json_data['tile_sources']['Image']['Url'] = tiles_url
+            return HttpResponse(
+                json.dumps(json_data), status=status.HTTP_200_OK,
                 content_type=response.headers.get('content-type')
             )
         else:

@@ -18,7 +18,8 @@ from django.contrib import admin
 
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from viewer_gw.views import DZIWrapper, TileWrapper, ImageMppWrapper, ThumbnailWrapper
+from viewer_gw.views import DZIWrapper, JSONWrapper, JSONMetadataWrapper, TileWrapper,\
+    ImageMppWrapper, ThumbnailWrapper
 from ome_data_gw.views import ProjectsListWrapper, ProjectDetailsWrapper, DatasetDetailsWrapper,\
     ImagesQuickListWrapper, ImageDetailsWrapper
 from ome_tags_gw.views import AnnotationsWrapper, TagsetDetailsWrapper, TagDetailsWrapper
@@ -27,8 +28,10 @@ from examples.views import get_example_viewer
 
 urlpatterns = [
     # DZI files
-    url(r'^api/deepzoom/(?P<image_id>[0-9]+)/$',
+    url(r'^api/deepzoom/(?P<image_id>[0-9]+).dzi/$',
         DZIWrapper.as_view({'get': 'get'})),
+    url(r'^api/deepzoom/(?P<image_id>[0-9]+).json/$',
+        JSONWrapper.as_view({'get': 'get'})),
 
     # tiles
     url(r'^api/deepzoom/(?P<image_id>[0-9]+)_files/(?P<level>[0-9]+)/'
@@ -38,6 +41,10 @@ urlpatterns = [
     # image microns per pixel
     url(r'^api/image_mpp/(?P<image_id>[0-9]+)/$',
         ImageMppWrapper.as_view({'get': 'get'})),
+
+    # image mpp + tile sources
+    url(r'^api/deepzoom/(?P<image_id>[0-9]+)_metadata.json/$',
+        JSONMetadataWrapper.as_view({'get': 'get'})),
 
     # thumbnails
     url(r'^api/thumbnail/(?P<image_id>[0-9]+)/(?P<size>[0-9]+)/(?P<image_format>jpeg|png)/',
