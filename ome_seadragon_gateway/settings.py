@@ -154,6 +154,8 @@ STATIC_URL = '/django/static/'
 SESSION_COOKIE_NAME = 'ome_seadragon_gw_session'
 
 # CUSTOM SETTINGS
+OMERO_COOKIE_NAME = 'session_id'
+
 OME_USER = None
 OME_PASSWD = None
 OME_SERVER_ID = 1
