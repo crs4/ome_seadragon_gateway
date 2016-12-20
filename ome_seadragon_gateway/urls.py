@@ -100,6 +100,9 @@ urlpatterns = [
 
     # admin
     url(r'^admin/', include(admin.site.urls)),
+
+    #OAuth2Autentication admin
+    url(r'^oauth2/', include('oauth2_provider.urls', namespace='oauth2')),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
