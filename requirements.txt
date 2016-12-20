@@ -1,5 +1,6 @@
 requests
 lxml
 Django < 1.9
-djangorestfamework
+djangorestframework
 redis
+django-cors-headers

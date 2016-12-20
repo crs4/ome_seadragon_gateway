@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'view_templates',
     'viewer_gw',
     'ome_data_gw',
@@ -47,6 +48,7 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -152,6 +154,8 @@ USE_TZ = True
 STATIC_URL = '/django/static/'
 
 SESSION_COOKIE_NAME = 'ome_seadragon_gw_session'
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 # CUSTOM SETTINGS
 OMERO_COOKIE_NAME = 'session_id'
