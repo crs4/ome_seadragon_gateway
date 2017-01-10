@@ -25,13 +25,9 @@ def ome_session_required(function):
                 r = client.get(url, params=payload, headers={'X-Requested-With': 'XMLHttpRequest'})
                 session_valid = (r.status_code == status.HTTP_204_NO_CONTENT)
             if not session_valid:
-                # remove sessionid cookie from client, if exists
-                try:
-                    client.cookies.pop(settings.OMERO_COOKIE_NAME)
-                    logger.info('Cleaning existing session ID')
-                except KeyError:
-                    logger.info('No session ID to clean')
                 # open a new connection
+                logger.info('Not a valid session, create a new instance for the client')
+                client = Session()
                 url = urljoin(settings.OME_SEADRAGON_BASE_URL, 'connect/')
                 payload = {
                     'allow_public_user': 'false',
