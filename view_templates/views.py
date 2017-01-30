@@ -4,6 +4,8 @@ from rest_framework import status
 from rest_framework.viewsets import ViewSet
 from rest_framework.exceptions import NotAuthenticated
 
+from oauth2_provider.ext.rest_framework import TokenHasScope
+
 from django.http import HttpResponse
 
 import ome_seadragon_gateway.settings as gws
@@ -13,6 +15,8 @@ logger = logging.getLogger('ome_seadragon_gw')
 
 
 class SimpleGetWrapper(ViewSet):
+    permission_classes = (TokenHasScope, )
+    required_scopes = ['read']
 
     def _get_ome_seadragon_url(self, url):
         return urljoin(
