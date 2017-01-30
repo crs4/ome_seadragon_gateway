@@ -1,0 +1,8 @@
+requests
+lxml
+Django < 1.9
+djangorestframework
+redis
+django-cors-headers
+django-oauth-toolkit
+djangorestframework-oauth

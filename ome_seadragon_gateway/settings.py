@@ -38,15 +38,18 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'view_templates',
     'viewer_gw',
     'ome_data_gw',
     'ome_tags_gw',
     'static_files_gw',
-    'examples'
+    'examples',
+    'oauth2_provider'
 )
 
 MIDDLEWARE_CLASSES = (
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -121,6 +124,18 @@ LOGGING = {
     }
 }
 
+# Django REST Framework OAUTH2
+OAUTH2_PROVIDER = {
+    # this is the list of available scopes
+    'SCOPES': {'read': 'Read scope'}
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
+    )
+}
+
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
@@ -149,11 +164,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/django/static/'
 
 SESSION_COOKIE_NAME = 'ome_seadragon_gw_session'
 
+CORS_ORIGIN_ALLOW_ALL = True
+
 # CUSTOM SETTINGS
+OMERO_COOKIE_NAME = 'session_id'
+
 OME_USER = None
 OME_PASSWD = None
 OME_SERVER_ID = 1

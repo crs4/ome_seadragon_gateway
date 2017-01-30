@@ -16,21 +16,21 @@ def ome_session_required(function):
             session_valid = False
             if ome_session_id:
                 logger.info('Session ID is: %s', ome_session_id)
-                client.cookies.set('sessionid', ome_session_id)
+                client.cookies.set(settings.OMERO_COOKIE_NAME, ome_session_id)
                 # check if sessionid points to a valid session
                 url = urljoin(settings.OME_SEADRAGON_BASE_URL, 'connect/')
-                r = client.get(url, headers={'X-Requested-With': 'XMLHttpRequest'})
+                payload = {
+                    'allow_public_user': 'false'
+                }
+                r = client.get(url, params=payload, headers={'X-Requested-With': 'XMLHttpRequest'})
                 session_valid = (r.status_code == status.HTTP_204_NO_CONTENT)
             if not session_valid:
-                # remove sessionid cookie from client, if exists
-                try:
-                    client.cookies.pop('sessionid')
-                    logger.info('Cleaning existing session ID')
-                except KeyError:
-                    logger.info('No session ID to clean')
                 # open a new connection
+                logger.info('Not a valid session, create a new instance for the client')
+                client = Session()
                 url = urljoin(settings.OME_SEADRAGON_BASE_URL, 'connect/')
                 payload = {
+                    'allow_public_user': 'false',
                     'username': settings.OME_USER,
                     'password': settings.OME_PASSWD,
                     'server': settings.OME_SERVER_ID
@@ -40,7 +40,7 @@ def ome_session_required(function):
                 r = client.get(url, params=payload, headers={'X-Requested-With': 'XMLHttpRequest'})
                 logger.info(r.url)
                 if r.status_code == status.HTTP_204_NO_CONTENT:
-                    request.session['ome_session_id'] = client.cookies.get('sessionid')
+                    request.session['ome_session_id'] = client.cookies.get(settings.OMERO_COOKIE_NAME)
                 elif r.status_code == status.HTTP_403_FORBIDDEN:
                     raise PermissionDenied()
             return view_func(ctx, request, client, *args, **kwargs)
