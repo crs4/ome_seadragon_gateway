@@ -11,22 +11,31 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
+import os, yaml, sys
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
+# load YAML configuration, look for
+_CONF_FILE_PATH = os.environ.get('DJANGO_SETTINGS_FILE',
+                                 os.path.join(BASE_DIR, 'config', 'config.yaml'))
+cfg = None
+try:
+    with open(_CONF_FILE_PATH, 'r') as f:
+        cfg = yaml.load(f)
+except IOError:
+    pass
+if cfg is None:
+    sys.exit('Config file not found')
+
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '_=yw7j2pt!zdfyj-1qlpmy*krje45vu)uyo$97c8n5m*rm)mr)'
+SECRET_KEY = cfg['django']['secret_key']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = cfg['django']['debug']
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = cfg['django']['allowed_hosts']
 
 # Application definition
 
@@ -166,24 +175,24 @@ USE_TZ = True
 
 STATIC_URL = '/django/static/'
 
-SESSION_COOKIE_NAME = 'ome_seadragon_gw_session'
+SESSION_COOKIE_NAME = cfg['django']['session_cookie']
 
 CORS_ORIGIN_ALLOW_ALL = True
 
 # CUSTOM SETTINGS
-OMERO_COOKIE_NAME = 'session_id'
+OMERO_COOKIE_NAME = cfg['omero']['cookie']
 
-OME_USER = None
-OME_PASSWD = None
-OME_SERVER_ID = 1
+OME_USER = cfg['omero']['user']
+OME_PASSWD = cfg['omero']['password']
+OME_SERVER_ID = cfg['omero']['server_id']
 
-OME_SEADRAGON_BASE_URL = 'http://localhost:8080/ome_seadragon/'
-OME_SEADRAGON_STATIC_FILES_URL = 'http://localhost:8080/static/ome_seadragon/'
+OME_SEADRAGON_BASE_URL = cfg['ome_seadragon']['base_url']
+OME_SEADRAGON_STATIC_FILES_URL = cfg['ome_seadragon']['static_files_url']
 
 CACHE_SETTINGS = {
-    'driver': 'redis',
-    'host': 'localhost',
-    'port': 6379,
-    'db': 0,
-    'expire_time': {'minutes': 30}
+    'driver': cfg['cache']['driver'],
+    'host': cfg['cache']['host'],
+    'port': cfg['cache']['port'],
+    'db': cfg['cache']['db'],
+    'expire_time': cfg['cache']['expire_time']
 }

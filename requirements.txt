@@ -6,3 +6,4 @@ redis
 django-cors-headers
 django-oauth-toolkit
 djangorestframework-oauth
+pyyaml
