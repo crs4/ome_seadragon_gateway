@@ -6,3 +6,4 @@ djangorestframework-oauth
 requests
 redis
 pyyaml
+Pillow
