@@ -1,9 +1,8 @@
-requests
-lxml
-Django < 1.9
+Django < 2
 djangorestframework
-redis
 django-cors-headers
-django-oauth-toolkit
+django-oauth-toolkit < 1.2.0
 djangorestframework-oauth
+requests
+redis
 pyyaml
