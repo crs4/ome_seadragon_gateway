@@ -12,18 +12,20 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os, yaml, sys
+from yaml.scanner import ScannerError
+from yaml.error import YAMLError
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # load YAML configuration, look for
-_CONF_FILE_PATH = os.environ.get('DJANGO_SETTINGS_FILE',
+_CONF_FILE_PATH = os.environ.get('DJANGO_CONFIG_FILE',
                                  os.path.join(BASE_DIR, 'config', 'config.yaml'))
 cfg = None
 try:
     with open(_CONF_FILE_PATH, 'r') as f:
         cfg = yaml.load(f)
-except IOError:
+except (IOError, ScannerError, YAMLError):
     pass
 if cfg is None:
     sys.exit('Config file not found')
