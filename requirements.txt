@@ -1,9 +1,10 @@
 Django < 2
 djangorestframework
-django-cors-headers
+django-cors-headers <= 2.4.1
 django-oauth-toolkit < 1.2.0
 djangorestframework-oauth
 requests
 redis
 pyyaml
 Pillow
+https://github.com/crs4/ome_seadragon_cache/archive/master.zip
