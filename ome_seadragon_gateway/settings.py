@@ -24,7 +24,7 @@ _CONF_FILE_PATH = os.environ.get('DJANGO_CONFIG_FILE',
 cfg = None
 try:
     with open(_CONF_FILE_PATH, 'r') as f:
-        cfg = yaml.load(f)
+        cfg = yaml.load(f, Loader=yaml.FullLoader)
 except (IOError, ScannerError, YAMLError):
     pass
 if cfg is None:
