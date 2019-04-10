@@ -175,6 +175,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
+STATIC_ROOT = cfg['django']['static_root']
+
 STATIC_URL = '/django/static/'
 
 SESSION_COOKIE_NAME = cfg['django']['session_cookie']

@@ -4,6 +4,7 @@ django:
   allowed_hosts:
     - localhost
   session_cookie: ome_seadragon_gw_session
+  static_root: ./static/
 
 omero:
   cookie: session_id
