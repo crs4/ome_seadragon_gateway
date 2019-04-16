@@ -150,12 +150,26 @@ REST_FRAMEWORK = {
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if cfg['database']['engine'] == 'sqlite3':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, cfg['database']['name']),
+        }
     }
-}
+elif cfg['database']['engine'] == 'postgresql':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': cfg['database']['name'],
+            'USER': cfg['database']['user'],
+            'PASSWORD': cfg['database']['password'],
+            'HOST': cfg['database']['host'],
+            'PORT': cfg['database']['port']
+        }
+    }
+else:
+    sys.exit('A valid database engine should be provided, exit')
 
 
 # Internationalization

@@ -6,6 +6,14 @@ django:
   session_cookie: ome_seadragon_gw_session
   static_root: ./static/
 
+database:
+  engine: sqlite3
+  name: db.sqlite3
+  user:
+  password:
+  host:
+  port:
+
 omero:
   cookie: session_id
   user: null
