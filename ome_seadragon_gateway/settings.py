@@ -195,7 +195,12 @@ STATIC_URL = '/django/static/'
 
 SESSION_COOKIE_NAME = cfg['django']['session_cookie']
 
-CORS_ORIGIN_ALLOW_ALL = True
+
+if cfg['django']['cors_whitelist']:
+    CORS_ORIGIN_ALLOW_ALL = False
+    CORS_ORIGIN_WHITELIST = tuple(cfg['django']['cors_whitelist'])
+else:
+    CORS_ORIGIN_ALLOW_ALL = True
 
 # CUSTOM SETTINGS
 OMERO_COOKIE_NAME = cfg['omero']['cookie']
