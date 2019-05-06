@@ -1,8 +1,9 @@
-requests
-lxml
-Django < 1.9
-djangorestframework
-redis
-django-cors-headers
-django-oauth-toolkit
-djangorestframework-oauth
+Django==1.11.20
+djangorestframework==3.9.3
+django-cors-headers==2.4.1
+django-oauth-toolkit==0.11.0
+djangorestframework-oauth==1.1.0
+requests==2.21.0
+pyyaml==5.1
+Pillow==6.0.0
+https://github.com/crs4/ome_seadragon_cache/archive/master.zip

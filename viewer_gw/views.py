@@ -1,7 +1,7 @@
-from lxml import etree
 from cStringIO import StringIO
 from PIL import Image
 import json
+import xml.etree.ElementTree as ET
 
 from rest_framework import status
 from rest_framework.exceptions import NotAuthenticated
@@ -26,7 +26,7 @@ class DZIWrapper(SimpleGetWrapper):
         response = client.get(url, headers={'X-Requested-With': 'XMLHttpRequest'})
         if response.status_code == status.HTTP_200_OK:
             xml_content = response.content
-            tile_size = etree.fromstring(xml_content).get('TileSize')
+            tile_size = ET.fromstring(xml_content).get('TileSize')
             request.session.setdefault('images_conf', {}).update({image_id: {'tile_size': tile_size}})
             return HttpResponse(
                 xml_content, status=status.HTTP_200_OK,
@@ -114,7 +114,7 @@ class TileWrapper(SimpleGetWrapper):
             response = client.get(url, headers={'X-Requested-With': 'XMLHttpRequest'})
             if response.status_code == status.HTTP_200_OK:
                 xml_content = response.content
-                tile_size = etree.fromstring(xml_content).get('TileSize')
+                tile_size = ET.fromstring(xml_content).get('TileSize')
                 request.session.setdefault('images_conf', {}).update({image_id: {'tile_size': tile_size}})
                 return tile_size
             else:

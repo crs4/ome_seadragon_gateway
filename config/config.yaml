@@ -1,0 +1,32 @@
+django:
+  debug: true
+  secret_key: _=yw7j2pt!zdfyj-1qlpmy*krje45vu)uyo$97c8n5m*rm)mr)
+  allowed_hosts:
+    - localhost
+  session_cookie: ome_seadragon_gw_session
+  static_root: ./static/
+
+database:
+  engine: sqlite3
+  name: db.sqlite3
+  user:
+  password:
+  host:
+  port:
+
+omero:
+  cookie: session_id
+  user: null
+  password: null
+  server_id: 1
+
+ome_seadragon:
+  base_url: http://localhost:8080/ome_seadragon/
+  static_files_url: http://localhost:8080/static/ome_seadragon/
+
+cache:
+  driver: redis
+  host: localhost
+  port: 6379
+  db: 0
+  expire_time: {minutes: 30}
