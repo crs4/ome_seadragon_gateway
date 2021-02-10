@@ -1,6 +1,6 @@
-import settings
+from . import settings
 from requests import Session
-from urlparse import urljoin
+from urllib.parse import urljoin
 from rest_framework import status
 from rest_framework.exceptions import PermissionDenied
 
