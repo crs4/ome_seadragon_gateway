@@ -1,4 +1,8 @@
-from cStringIO import StringIO
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import BytesIO  # for Python 3
+
 from PIL import Image
 import json
 import xml.etree.ElementTree as ET
