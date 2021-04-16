@@ -1,8 +1,4 @@
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from io import BytesIO  # for Python 3
-
+from io import BytesIO
 from PIL import Image
 import json
 import xml.etree.ElementTree as ET
@@ -131,8 +127,9 @@ class TileWrapper(SimpleGetWrapper):
         if tile is None:
             url = self._get_ome_seadragon_url('deepzoom/get/%s_files/%s/%s_%s.%s' %
                                               (image_id, level, column, row, image_format))
-            response = client.get(url, headers={'X-Requested-With': 'XMLHttpRequest'})
-            tile = Image.open(StringIO(response.content))
+            response = client.get(url, headers={'X-Requested-With': 'XMLHttpRequest'},
+                                  stream=True)
+            tile = Image.open(BytesIO(response.content))
             self._tile_to_cache(image_id, level, column, row, image_format, tile_size, tile)
             if response.status_code == status.HTTP_200_OK:
                 return HttpResponse(
@@ -179,9 +176,9 @@ class ThumbnailWrapper(SimpleGetWrapper):
         if thumbnail is None:
             url = self._get_ome_seadragon_url('deepzoom/get/thumbnail/%s.dzi' % image_id)
             params = {'size': size}
-            response = client.get(url, params=params,
+            response = client.get(url, params=params, stream=True,
                                   headers={'X-Requested-With': 'XMLHttpRequest'})
-            thumbnail = Image.open(StringIO(response.content))
+            thumbnail = Image.open(BytesIO(response.content))
             self._thumbnail_to_cache(image_id, thumbnail, size, image_format)
             if response.status_code == status.HTTP_200_OK:
                 return HttpResponse(
