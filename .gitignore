@@ -65,6 +65,9 @@ target/
 # PyCharm stuff
 .idea
 
+# VSCode stuff
+.vscode
+
 # Grunt output files
 node_modules
 promort/static/js/promort.min.js
