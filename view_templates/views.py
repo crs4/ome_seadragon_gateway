@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.viewsets import ViewSet
 from rest_framework.exceptions import NotAuthenticated
 
-from oauth2_provider.ext.rest_framework import TokenHasScope
+from oauth2_provider.contrib.rest_framework import TokenHasScope
 
 from django.http import HttpResponse
 

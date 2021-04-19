@@ -22,6 +22,7 @@ class DZIWrapper(SimpleGetWrapper):
 
     @ome_session_required
     def get(self, request, client, image_id, format=None):
+        logger.debug("Requested image is: %s", image_id)
         url = self._get_ome_seadragon_url('deepzoom/get/%s.dzi' % image_id)
         response = client.get(url, headers={'X-Requested-With': 'XMLHttpRequest'})
         if response.status_code == status.HTTP_200_OK:
