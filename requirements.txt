@@ -5,5 +5,5 @@ django-oauth-toolkit==1.5.0
 djangorestframework-oauth==1.1.0
 requests==2.25.1
 pyyaml==5.4.1
-Pillow==8.1.1
-https://github.com/crs4/ome_seadragon_cache/archive/v0.2.1.zip
+Pillow==8.3.2
+https://github.com/crs4/ome_seadragon_cache/archive/v0.2.2.zip
